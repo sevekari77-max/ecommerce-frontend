@@ -1,17 +1,51 @@
+/**********************
+ CART HELPERS (SHARED)
+**********************/
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function updateCartCount() {
+  const cart = getCart();
+
+  const total = cart.reduce((sum, item) => {
+    const qty = Number(item.quantity) || 0;
+    return sum + qty;
+  }, 0);
+
+  const badge = document.getElementById("cartCount");
+  if (badge) badge.textContent = total;
+}
+
+document.addEventListener("DOMContentLoaded", updateCartCount);
+
+/**********************
+ NAV TOGGLE
+**********************/
+
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.querySelector(".nav-links");
 
-hamburger.addEventListener("click", () => {
-  navLinks.classList.toggle("active");
-});
+if (hamburger) {
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+}
+
+/**********************
+ PRODUCT GRID
+**********************/
+
 const productGrid = document.getElementById("productGrid");
 
 const API_URL = "https://fakestoreapi.com/products";
 const CACHE_KEY = "products-cache";
-const CACHE_TIME = 1000 * 60 * 10; // 10 minutes
+const CACHE_TIME = 1000 * 60 * 10;
 
 async function fetchProducts() {
-  // Check cache first
+  if (!productGrid) return;
+
   const cached = localStorage.getItem(CACHE_KEY);
 
   if (cached) {
@@ -29,15 +63,11 @@ async function fetchProducts() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const response = await fetch(API_URL, {
-      signal: controller.signal,
-    });
+    const response = await fetch(API_URL, { signal: controller.signal });
 
     clearTimeout(timeout);
 
-    if (!response.ok) {
-      throw new Error("API error");
-    }
+    if (!response.ok) throw new Error("API error");
 
     const data = await response.json();
 
@@ -50,12 +80,10 @@ async function fetchProducts() {
     );
 
     renderProducts(data);
-  } catch (error) {
-    console.error(error);
-
-    productGrid.innerHTML = `
-      <p class="loading">⚠️ Failed to load products. Please refresh.</p>
-    `;
+  } catch (err) {
+    console.error(err);
+    productGrid.innerHTML =
+      `<p class="loading">⚠️ Failed to load products.</p>`;
   }
 }
 
@@ -65,9 +93,10 @@ function renderProducts(products) {
   products.forEach((product) => {
     const card = document.createElement("div");
     card.className = "product-card";
+
     card.addEventListener("click", () => {
-  window.location.href = `product.html?id=${product.id}`;
-});
+      window.location.href = `product.html?id=${product.id}`;
+    });
 
     card.innerHTML = `
       <img src="${product.image}" alt="${product.title}" loading="lazy" />
@@ -80,13 +109,11 @@ function renderProducts(products) {
         ${product.description.substring(0, 80)}...
       </p>
 
-      <button class="add-btn">Add to Cart</button>
+      <button class="add-btn">View Product</button>
     `;
 
     productGrid.appendChild(card);
   });
 }
 
-fetchProducts()
-
-
+fetchProducts();

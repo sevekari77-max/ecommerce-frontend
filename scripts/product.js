@@ -1,8 +1,43 @@
+/**********************
+ CART HELPERS
+**********************/
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function updateCartCount() {
+  const cart = getCart();
+
+  const total = cart.reduce((sum, item) => {
+    const qty = Number(item.quantity) || 0;
+    return sum + qty;
+  }, 0);
+
+  const badge = document.getElementById("cartCount");
+  if (badge) badge.textContent = total;
+}
+
+document.addEventListener("DOMContentLoaded", updateCartCount);
+
+/**********************
+ PRODUCT LOAD
+**********************/
+
 const productDetail = document.getElementById("productDetail");
-const cartCountEl = document.getElementById("cartCount");
 
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
+
+if (!productId && productDetail) {
+  productDetail.innerHTML =
+    "<p class='loading'>No product selected.</p>";
+  throw new Error("Missing product id");
+}
 
 const API_URL = "https://fakestoreapi.com/products";
 
@@ -13,13 +48,20 @@ async function loadProduct() {
     if (!res.ok) throw new Error("Product not found");
 
     const product = await res.json();
-
     renderProduct(product);
   } catch (err) {
-    productDetail.innerHTML =
-      "<p class='loading'>Failed to load product.</p>";
+    console.error(err);
+
+    if (productDetail) {
+      productDetail.innerHTML =
+        "<p class='loading'>Failed to load product.</p>";
+    }
   }
 }
+
+/**********************
+ RENDER PRODUCT
+**********************/
 
 function renderProduct(product) {
   productDetail.innerHTML = `
@@ -38,7 +80,6 @@ function renderProduct(product) {
 
         <p class="detail-desc">${product.description}</p>
 
-        <!-- VARIATIONS -->
         <div class="variations">
           <p>Size:</p>
           <div class="variation-options">
@@ -48,7 +89,6 @@ function renderProduct(product) {
           </div>
         </div>
 
-        <!-- QUANTITY -->
         <div class="quantity-control">
           <button id="decreaseQty">−</button>
           <span id="qty">1</span>
@@ -72,23 +112,26 @@ function renderProduct(product) {
   setupInteractions(product);
 }
 
+/**********************
+ INTERACTIONS
+**********************/
+
 function setupInteractions(product) {
   const qtyEl = document.getElementById("qty");
   const increaseBtn = document.getElementById("increaseQty");
   const decreaseBtn = document.getElementById("decreaseQty");
 
   const totalPriceEl = document.getElementById("totalPrice");
-  const unitPrice = product.price;
+  const unitPrice = Number(product.price);
 
   const feedback = document.getElementById("cartFeedback");
 
   let quantity = 1;
   let selectedSize = "S";
 
-  /* -------- QUANTITY -------- */
-
   function updateTotal() {
-    totalPriceEl.textContent = (unitPrice * quantity).toFixed(2);
+    totalPriceEl.textContent =
+      (unitPrice * quantity).toFixed(2);
   }
 
   increaseBtn.addEventListener("click", () => {
@@ -107,8 +150,6 @@ function setupInteractions(product) {
     }
   });
 
-  /* -------- VARIATIONS -------- */
-
   document.querySelectorAll(".var-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document
@@ -119,8 +160,6 @@ function setupInteractions(product) {
       selectedSize = btn.dataset.value;
     });
   });
-
-  /* -------- ADD TO CART -------- */
 
   document
     .getElementById("addToCartBtn")
@@ -136,36 +175,34 @@ function setupInteractions(product) {
     });
 }
 
-/* CART */
-
-function getCart() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
-}
-
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
+/**********************
+ ADD TO CART
+**********************/
 
 function addToCart(product, quantity, size) {
+  if (quantity < 1) return;
+
   const cart = getCart();
 
-  cart.push({
-    id: product.id,
-    title: product.title,
-    price: product.price,
-    image: product.image,
-    quantity,
-    size,
-  });
+  const existing = cart.find(
+    (item) => item.id === product.id && item.size === size
+  );
+
+  if (existing) {
+    existing.quantity += Number(quantity);
+  } else {
+    cart.push({
+      id: product.id,
+      title: product.title,
+      price: Number(product.price),
+      image: product.image,
+      quantity: Number(quantity),
+      size,
+    });
+  }
 
   saveCart(cart);
   updateCartCount();
 }
 
-function updateCartCount() {
-  const cart = getCart();
-  cartCountEl.textContent = cart.length;
-}
-
-updateCartCount();
 loadProduct();
