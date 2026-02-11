@@ -1,89 +1,26 @@
-/**********************
- CART HELPERS (SHARED)
-**********************/
-
-function getCart() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
-}
-
-function updateCartCount() {
-  const cart = getCart();
-
-  const total = cart.reduce((sum, item) => {
-    const qty = Number(item.quantity) || 0;
-    return sum + qty;
-  }, 0);
-
-  const badge = document.getElementById("cartCount");
-  if (badge) badge.textContent = total;
-}
-
-document.addEventListener("DOMContentLoaded", updateCartCount);
-
-/**********************
- NAV TOGGLE
-**********************/
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+});
 
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.querySelector(".nav-links");
 
-if (hamburger) {
-  hamburger.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
-}
-
-/**********************
- PRODUCT GRID
-**********************/
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("active");
+});
 
 const productGrid = document.getElementById("productGrid");
 
 const API_URL = "https://fakestoreapi.com/products";
-const CACHE_KEY = "products-cache";
-const CACHE_TIME = 1000 * 60 * 10;
 
 async function fetchProducts() {
-  if (!productGrid) return;
-
-  const cached = localStorage.getItem(CACHE_KEY);
-
-  if (cached) {
-    const parsed = JSON.parse(cached);
-
-    if (Date.now() - parsed.timestamp < CACHE_TIME) {
-      renderProducts(parsed.data);
-      return;
-    }
-  }
-
   try {
-    productGrid.innerHTML = `<p class="loading">Loading products...</p>`;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const response = await fetch(API_URL, { signal: controller.signal });
-
-    clearTimeout(timeout);
-
-    if (!response.ok) throw new Error("API error");
-
-    const data = await response.json();
-
-    localStorage.setItem(
-      CACHE_KEY,
-      JSON.stringify({
-        timestamp: Date.now(),
-        data,
-      })
-    );
-
+    const res = await fetch(API_URL);
+    const data = await res.json();
     renderProducts(data);
   } catch (err) {
-    console.error(err);
     productGrid.innerHTML =
-      `<p class="loading">⚠️ Failed to load products.</p>`;
+      "<p class='loading'>⚠️ Failed to load products.</p>";
   }
 }
 
@@ -99,7 +36,13 @@ function renderProducts(products) {
     });
 
     card.innerHTML = `
-      <img src="${product.image}" alt="${product.title}" loading="lazy" />
+      <img
+        src="${product.image}"
+        alt="${product.title}"
+        loading="lazy"
+        width="300"
+        height="300"
+      />
 
       <h3 class="product-title">${product.title}</h3>
 
@@ -109,11 +52,26 @@ function renderProducts(products) {
         ${product.description.substring(0, 80)}...
       </p>
 
-      <button class="add-btn">View Product</button>
+      <button class="add-btn">Add to Cart</button>
     `;
 
     productGrid.appendChild(card);
   });
+}
+
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function updateCartCount() {
+  const cart = getCart();
+  const total = cart.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  const badge = document.getElementById("cartCount");
+  if (badge) badge.textContent = total;
 }
 
 fetchProducts();

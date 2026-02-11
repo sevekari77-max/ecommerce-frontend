@@ -2,12 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>E-Commerce Frontend</title>
+
+  <!-- SEO -->
+  <meta
+    name="description"
+    content="ShopEasy ecommerce store with smart gadgets and electronics at great prices."
+  />
+
+  <!-- Preload hero image for faster LCP -->
+  <link
+    rel="preload"
+    as="image"
+    href="assets/images/hero.webp"
+    type="image/webp"
+  />
+
   <link rel="stylesheet" href="styles/main.css" />
 </head>
+
 <body>
-    <header class="site-header">
+
+<header class="site-header">
+
   <div class="logo">ShopEasy</div>
 
   <nav class="nav-links">
@@ -18,7 +41,10 @@
   </nav>
 
   <div class="header-actions">
+
+    <label class="sr-only" for="searchInput">Search products</label>
     <input
+      id="searchInput"
       type="text"
       placeholder="Search products..."
       class="search-bar"
@@ -28,15 +54,22 @@
       🛒 <span class="cart-badge" id="cartCount">0</span>
     </a>
 
-    <div class="hamburger" id="hamburger">
+    <button
+      class="hamburger"
+      id="hamburger"
+      aria-label="Toggle navigation"
+    >
       ☰
-    </div>
+    </button>
+
   </div>
+
 </header>
 
-  </header>
+<main>
 
- <section class="hero">
+<section class="hero">
+
   <picture>
     <source
       srcset="assets/images/hero.webp"
@@ -47,6 +80,9 @@
       src="assets/images/hero.webp"
       alt="Sale Banner"
       class="hero-bg"
+      width="1600"
+      height="900"
+      fetchpriority="high"
     />
   </picture>
 
@@ -55,21 +91,22 @@
     <p>Up to 50% off on smart gadgets</p>
     <a href="#products" class="hero-btn">Shop Now</a>
   </div>
+
 </section>
 
-<section class="products">
+<section class="products" id="products">
+
   <h2>Featured Products</h2>
 
- <div class="product-grid" id="productGrid">
-  <p class="loading">Loading products...</p>
-</div>
-
-    <!-- Products will be injected here dynamically -->
+  <div class="product-grid" id="productGrid">
+    <p class="loading">Loading products...</p>
   </div>
+
 </section>
 
+</main>
 
+<script src="scripts/app.js" defer></script>
 
-  <script src="scripts/app.js"></script>
 </body>
 </html>
