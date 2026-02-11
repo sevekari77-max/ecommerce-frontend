@@ -65,6 +65,9 @@ function renderProducts(products) {
   products.forEach((product) => {
     const card = document.createElement("div");
     card.className = "product-card";
+    card.addEventListener("click", () => {
+  window.location.href = `product.html?id=${product.id}`;
+});
 
     card.innerHTML = `
       <img src="${product.image}" alt="${product.title}" loading="lazy" />
@@ -84,6 +87,6 @@ function renderProducts(products) {
   });
 }
 
-fetchProducts();
+fetchProducts()
 
 

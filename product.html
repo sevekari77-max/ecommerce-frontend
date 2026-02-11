@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">ShopEasy</div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">Products</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <div class="header-actions">
+    <input type="text" placeholder="Search products..." class="search-bar" />
+
+    <div class="cart">
+      🛒 <span class="cart-badge" id="cartCount">0</span>
+    </div>
+
+    <div class="hamburger" id="hamburger">☰</div>
+  </div>
+</header>
+
+<section class="product-detail" id="productDetail">
+  <p class="loading">Loading product...</p>
+</section>
+
+<script src="scripts/product.js"></script>
+</body>
+</html>
