@@ -5,7 +5,7 @@ import { getAuth } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDXn3C5ccaq1hUVEJ_9AFRA9_efKBibVS0",
+  apiKey: "AIzaSyDXn3C5ccaq1hlVEJ_9AFRA9_efKBibVS0",
   authDomain: "shopeasy-auth-2305c.firebaseapp.com",
   projectId: "shopeasy-auth-2305c",
   storageBucket: "shopeasy-auth-2305c.firebasestorage.app",
