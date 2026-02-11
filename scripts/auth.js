@@ -1,3 +1,13 @@
+import { auth } from "./firebase.js";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 /**********************
  FORM SWITCHING
 **********************/
@@ -16,100 +26,94 @@ document.getElementById("showLogin").onclick = () => {
 };
 
 /**********************
- PASSWORD TOGGLE
+ HELPERS
 **********************/
 
-document.querySelectorAll(".toggle-pass").forEach((icon) => {
-  icon.addEventListener("click", () => {
-    const input = document.getElementById(icon.dataset.target);
-
-    input.type =
-      input.type === "password" ? "text" : "password";
-  });
-});
-
-/**********************
- VALIDATION HELPERS
-**********************/
+function showError(el, msg) {
+  el.textContent = msg;
+}
 
 function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
 }
 
-function isStrongPassword(password) {
-  return (
-    password.length >= 8 &&
-    /[A-Z]/.test(password) &&
-    /[a-z]/.test(password) &&
-    /\d/.test(password)
-  );
-}
+/**********************
+ SIGNUP
+**********************/
+
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = signupForm.signupName.value.trim();
+  const email = signupForm.signupEmail.value.trim();
+  const password = signupForm.signupPassword.value;
+  const confirm = signupForm.confirmPassword.value;
+
+  const errorEl = document.getElementById("signupError");
+
+  if (!name || !email || !password) {
+    showError(errorEl, "All fields required");
+    return;
+  }
+
+  if (password !== confirm) {
+    showError(errorEl, "Passwords do not match");
+    return;
+  }
+
+  try {
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    window.location.href = "index.html";
+  } catch (err) {
+    showError(errorEl, err.message);
+  }
+});
 
 /**********************
  LOGIN
 **********************/
 
-loginForm.addEventListener("submit", (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = loginForm.loginEmail.value;
+  const email = loginForm.loginEmail.value.trim();
   const password = loginForm.loginPassword.value;
 
   const errorEl = document.getElementById("loginError");
 
-  if (!isValidEmail(email)) {
-    errorEl.textContent = "Invalid email format";
-    return;
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    window.location.href = "index.html";
+  } catch (err) {
+    showError(errorEl, err.message);
   }
-
-  if (!password) {
-    errorEl.textContent = "Password required";
-    return;
-  }
-
-  errorEl.textContent = "";
-
-  alert("Logged in successfully (mock)");
 });
 
 /**********************
- SIGNUP
+ AUTH STATE
 **********************/
 
-signupForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const name = signupForm.signupName.value;
-  const email = signupForm.signupEmail.value;
-  const password = signupForm.signupPassword.value;
-  const confirm = signupForm.confirmPassword.value;
-
-  const errorEl = document.getElementById("signupError");
-  const strengthEl = document.getElementById("passwordStrength");
-
-  if (!name) {
-    errorEl.textContent = "Name required";
-    return;
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("Logged in:", user.email);
   }
-
-  if (!isValidEmail(email)) {
-    errorEl.textContent = "Invalid email";
-    return;
-  }
-
-  if (!isStrongPassword(password)) {
-    errorEl.textContent =
-      "Password must include uppercase, lowercase, number (8+)";
-    return;
-  }
-
-  if (password !== confirm) {
-    errorEl.textContent = "Passwords do not match";
-    return;
-  }
-
-  errorEl.textContent = "";
-  strengthEl.textContent = "Strong password ✅";
-
-  alert("Account created (mock)");
 });
+
+/**********************
+ LOGOUT (FOR HEADER LATER)
+**********************/
+
+window.logoutUser = async function () {
+  await signOut(auth);
+  window.location.href = "auth.html";
+};
