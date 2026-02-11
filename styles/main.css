@@ -485,4 +485,86 @@ body {
     text-align: left;
   }
 }
+/* AUTH PAGE */
+
+.auth-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.auth-form {
+  display: none;
+}
+
+.auth-form.active {
+  display: block;
+}
+
+.auth-form h2 {
+  margin-bottom: 20px;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.password-field {
+  position: relative;
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.switch {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.error {
+  color: crimson;
+  font-size: 0.85rem;
+  min-height: 16px;
+}
+
+.forgot {
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .auth-box {
+    margin: 0 20px;
+  }
+}
 

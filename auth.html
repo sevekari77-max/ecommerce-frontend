@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Signup</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">ShopEasy</div>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+
+  <div class="header-actions">
+    <a href="cart.html" class="cart">
+      🛒 <span class="cart-badge" id="cartCount">0</span>
+    </a>
+  </div>
+</header>
+
+<section class="auth-container">
+
+  <div class="auth-box">
+
+    <!-- LOGIN -->
+    <form id="loginForm" class="auth-form active">
+      <h2>Login</h2>
+
+      <input type="email" id="loginEmail" placeholder="Email" required />
+
+      <div class="password-field">
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <span class="toggle-pass" data-target="loginPassword">👁</span>
+      </div>
+
+      <p class="error" id="loginError"></p>
+
+      <button type="submit">Login</button>
+
+      <p>
+        Don’t have an account?
+        <span class="switch" id="showSignup">Sign up</span>
+      </p>
+
+      <a href="#" class="forgot">Forgot Password?</a>
+    </form>
+
+    <!-- SIGNUP -->
+    <form id="signupForm" class="auth-form">
+      <h2>Sign Up</h2>
+
+      <input type="text" id="signupName" placeholder="Full Name" />
+
+      <input type="email" id="signupEmail" placeholder="Email" />
+
+      <div class="password-field">
+        <input type="password" id="signupPassword" placeholder="Password" />
+        <span class="toggle-pass" data-target="signupPassword">👁</span>
+      </div>
+
+      <small id="passwordStrength"></small>
+
+      <div class="password-field">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password" />
+      </div>
+
+      <p class="error" id="signupError"></p>
+
+      <button type="submit">Create Account</button>
+
+      <p>
+        Already have an account?
+        <span class="switch" id="showLogin">Login</span>
+      </p>
+    </form>
+
+  </div>
+
+</section>
+
+<script src="scripts/auth.js"></script>
+</body>
+</html>
