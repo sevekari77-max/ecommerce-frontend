@@ -37,12 +37,26 @@
 
   </header>
 
-  <section class="hero">
-  <div class="hero-content">
-    <h1>Biggest Sale of the Year</h1>
-    <p>Discover premium products at unbeatable prices. Limited time only.</p>
-    <button class="hero-btn">Shop Now</button>
-  </div>
+ <section class="hero">
+  <picture>
+    <source
+      srcset="
+        assets/images/hero-small.webp 480w,
+        assets/images/hero-medium.webp 900w,
+        assets/images/hero-large.webp 1600w
+      "
+      sizes="100vw"
+      type="image/webp"
+    />
+
+    <img
+      src="assets/images/hero-large.webp"
+      alt="Sale Banner"
+      class="hero-bg"
+    />
+  </picture>
+
+  <div class="hero-content">...</div>
 </section>
 
 <section class="products">
